@@ -1,5 +1,6 @@
 'use client'
 
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -81,6 +82,9 @@ const nav = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const { data:session, status } = useSession();
+  console.log(session);
+  
 
   return (
     <aside style={{
@@ -183,10 +187,10 @@ export default function Sidebar() {
           background: 'var(--accent)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: '13px', fontWeight: '600', color: '#fff', flexShrink: 0,
-        }}>A</div>
+        }}>{session?.user?.name[0]}</div>
         <div>
-          <p style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-primary)' }}>Admin</p>
-          <p style={{ fontSize: '11px', color: 'var(--text-muted)' }}>admin@company.com</p>
+          <p style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-primary)' }}>{session?.user?.name}</p>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{session?.user?.email}</p>
         </div>
       </div>
     </aside>
