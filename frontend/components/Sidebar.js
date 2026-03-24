@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -177,21 +177,29 @@ export default function Sidebar() {
         borderTop: '1px solid var(--border)',
         paddingTop: '16px',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         gap: '10px',
         padding: '16px 8px 0',
       }}>
-        <div style={{
+        <div 
+        onClick={() => signOut({callbackUrl: '/'})}
+        className='w-full text-center py-2 rounded-lg cursor-pointer hover:border hover:border-red-400 hover:text-red-400 hover:transition-all hover:duration-100 hover:ease-in-out'>
+          LogOut
+        </div>
+       <div className='flex items-center gap-2'>
+         <div style={{
           width: '32px', height: '32px',
           borderRadius: '50%',
           background: 'var(--accent)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: '13px', fontWeight: '600', color: '#fff', flexShrink: 0,
-        }}>{session?.user?.name[0]}</div>
+        }}>{session?.user?.name[0] || 'U'}</div>
         <div>
           <p style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-primary)' }}>{session?.user?.name}</p>
           <p style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{session?.user?.email}</p>
         </div>
+       </div>
       </div>
     </aside>
   )
