@@ -37,7 +37,9 @@ services:
 
     environment:
       
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:vidhikasttl@postgres:5432/intern_db
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:vidhikasttl@postgres:5432/intern_management
+      
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:vidhikasttl@postgres:5432/intern_management
    
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
 
