@@ -88,6 +88,37 @@ function InternDashboard() {
                         </div>
                     </div>
 
+                    {/* Department Details */}
+                    {intern?.department && (
+                        <div className='bg-white p-6 rounded-2xl shadow-sm border border-gray-100'>
+                            <h2 className='text-lg font-bold text-gray-900 mb-4 border-gray-100 flex items-center gap-2'>
+                                Department Details
+                            </h2>
+                            <div className='flex flex-col gap-4'>
+                                <div>
+                                    <p className='text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1'>Department</p>
+                                    <p className='text-base font-medium text-gray-900'>{intern.department.name}</p>
+                                </div>
+                                {intern.department.departmentHead && (
+                                    <>
+                                        <div>
+                                            <p className='text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1'>Department Head</p>
+                                            <p className='text-base font-medium text-gray-900'>{intern.department.departmentHead.name}</p>
+                                        </div>
+                                        <div>
+                                            <p className='text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1'>Contact Email</p>
+                                            <p className='text-base font-medium text-gray-900'>
+                                                <a href={`mailto:${intern.department.departmentHead.email}`} className="text-[#1a3aff] hover:underline">
+                                                    {intern.department.departmentHead.email}
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Evaluations */}
                     <div className='bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex-1'>
                         <h2 className='text-lg font-bold text-gray-900 mb-4 border-gray-100 flex items-center gap-2'>

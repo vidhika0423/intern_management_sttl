@@ -31,6 +31,10 @@ query GetIntern($id: uuid!) {
     college
     department {
       name
+      departmentHead {
+        name
+        email
+      }
     }
     evaluations {
       feedback
