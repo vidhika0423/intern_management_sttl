@@ -1,6 +1,7 @@
 "use client";
 
 import { getAllUsers } from "@/services/dashboard/AdminStats";
+import { deleteUser, updateUser } from "@/services/UserApi";
 import { useFormik } from "formik";
 import { Trash2, UserRoundPen } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -9,6 +10,7 @@ function page() {
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(false);
   const [editingUserId, setEditingUserId] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const {
     values,
@@ -25,7 +27,12 @@ function page() {
       role: "",
     },
     onSubmit: (values) => {
-      console.log(values);
+      updateUser(editingUserId, values.name, values.email, values.role)
+        .then((data) => {
+          console.log(data);
+          setEditingUserId(null);
+        })
+        .catch(console.error);
     },
   });
 
@@ -76,9 +83,42 @@ function page() {
                   >
                     <UserRoundPen className="text-blue-500" size={20} />
                   </div>
-                  <div>
+                  <div onClick={() => setConfirmDelete(user.id)}>
                     <Trash2 className="text-red-500" size={20} />
                   </div>
+
+                  {confirmDelete === user.id && (
+                    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+                      <div className="bg-white w-1/4 p-5 rounded-2xl">
+                        <h2 className="text-2xl font-bold mb-6">Confirm Delete</h2>
+                        <p className="text-sm text-gray-500 mb-6">Are you sure you want to delete this user?</p>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            className="bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer hover:scale-110 transition-all duration-200"
+                            onClick={() => setConfirmDelete(null)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="button"
+                            className="bg-red-500 text-white px-4 py-2 rounded-lg cursor-pointer hover:scale-110 transition-all duration-200"
+                            onClick={() => {
+                              deleteUser(user.id)
+                                .then((data) => {
+                                  console.log(data);
+                                  // setUsers(users.filter((u) => u.id !== user.id));
+                                  setConfirmDelete(null);
+                                })
+                                .catch(console.error);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {editingUserId === user.id && (
@@ -93,6 +133,7 @@ function page() {
                           <label className="text-sm font-semibold">Name</label>
                           <input
                             type="text"
+                            name="name"
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.name}
@@ -103,6 +144,7 @@ function page() {
                           <label className="text-sm font-semibold">Email</label>
                           <input
                             type="email"
+                            name="email"
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.email}
