@@ -184,13 +184,9 @@ export default function ManagerDashboard() {
                 <div key={i} className="skeleton h-[52px] rounded-xl" />
               ))
             ) : (
-              <div className="py-8 flex text-center flex-col items-center justify-center border border-dashed border-gray-200 rounded-xl bg-gray-50/50">
-                <span className="text-2xl mb-2 opacity-50">📋</span>
+              <div className="py-8 flex text-center flex-col items-center justify-center rounded-xl">
                 <p className="text-[14px] text-(--text-muted) font-medium">
-                  Task overview unavailable.
-                </p>
-                <p className="text-[12px] text-gray-400 mt-1 max-w-[200px]">
-                  Use the management tools to create and assign tasks to interns.
+                  Task Not Found, Create First
                 </p>
               </div>
             )}

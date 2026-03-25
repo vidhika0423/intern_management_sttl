@@ -1,4 +1,5 @@
 import { gqlFetch } from "@/lib/graphql-client";
+import { requireAuth } from "@/lib/middleware/RequireRole";
 import { NextResponse } from "next/server";
 
 const DEPARTMENT_MANAGER_QUERY = `
@@ -19,9 +20,15 @@ const DEPARTMENT_MANAGER_QUERY = `
 `;
 
 export async function GET(request, context) {
+
+  const session = await requireAuth(request, ["admin", "manager", "mentor"])
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized", ok: false }, { status: 401 })
+  }
+
   const params = await context.params;
   const id = params.id;
-  
+
   try {
     const data = await gqlFetch(DEPARTMENT_MANAGER_QUERY, { id });
 
@@ -37,4 +44,4 @@ export async function GET(request, context) {
     console.error('Department fetch error:', error.message);
     return NextResponse.json({ error: error.message, ok: false }, { status: 500 });
   }
-}
+}

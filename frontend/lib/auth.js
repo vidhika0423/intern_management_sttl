@@ -56,9 +56,9 @@ export const authOptions = {
           return null;
         }
 
-        
-        
-        // 🔐 Password check
+
+
+        // Password check
         const isValid = await bcrypt.compare(
           credentials.password,
           user.password_hash
