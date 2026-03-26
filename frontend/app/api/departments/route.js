@@ -8,7 +8,7 @@ const DEPARTMENT_QUERY = `
             description
             name
             id
-            departmentHead {
+            user {
                 email
                 name
             }

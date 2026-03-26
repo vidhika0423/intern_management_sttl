@@ -92,7 +92,7 @@ export default function DepartmentList() {
                       Head of Dept
                     </span>
                     <span className="font-semibold text-(--text-primary) truncate text-ellipsis max-w-[120px]">
-                      {department.departmentHead?.name || "Unassigned"}
+                      {department.user?.name || "Unassigned"}
                     </span>
                   </div>
                 </div>
