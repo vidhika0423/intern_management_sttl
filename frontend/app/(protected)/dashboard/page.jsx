@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import AdminDashboard from '@/components/dashboard/AdminDashboard'
 import InternDashboard from '@/components/dashboard/InternDashboard';
 import ManagerDashboard from '@/components/dashboard/ManagerDashboard';
+import HRDashboard from '@/components/dashboard/HRDashboard';
 
 function Dashboard() {
   const { data: session, status } = useSession();
@@ -19,6 +20,8 @@ function Dashboard() {
         <InternDashboard />
       ) : status === "authenticated" && (session?.user?.role === "manager" || session?.user?.role === "mentor") ? (
         <ManagerDashboard />
+      ) : status === "authenticated" && session?.user?.role === "hr" ? (
+        <HRDashboard />
       ) : (
         <div className="flex h-screen items-center justify-center flex-col">
           <h1 className="text-2xl font-bold text-gray-800">You are not authorized to view this page</h1>

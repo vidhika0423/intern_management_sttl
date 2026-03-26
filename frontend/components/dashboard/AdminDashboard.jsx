@@ -6,11 +6,13 @@ import StatCard from "@/components/dashboard/StatCard";
 import { getAdminStats } from "@/services/dashboard/AdminStats";
 import { useSession } from "next-auth/react";
 import DepartmentList from "./DepartmentList";
+import UserModal from "./UserModal";
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isAddingUser, setIsAddingUser] = useState(false);
   const { data: session, status } = useSession();
 
   useEffect(() => {
@@ -47,8 +49,13 @@ export default function AdminDashboard() {
                     </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="bg-[#1a3aff] text-white px-4 py-2 rounded-full cursor-pointer hover:shadow-md hover:shadow-[#1a3aff]/50 hover:bg-[#1a3aff]/80 transition-all duration-200">Add Department</div>
-                  <div className="bg-[#1a3aff] text-white px-4 py-2 rounded-full cursor-pointer hover:shadow-md hover:shadow-[#1a3aff]/50 hover:bg-[#1a3aff]/80 transition-all duration-200">Add User</div>
+                  <div className="bg-[#1a3aff] text-white px-4 py-2 rounded-lg cursor-pointer hover:shadow-md hover:shadow-[#1a3aff]/50 hover:bg-[#1a3aff]/80 transition-all duration-200">Add Department</div>
+                  <div 
+                    onClick={() => setIsAddingUser(true)}
+                    className="bg-[#1a3aff] text-white px-4 py-2 rounded-lg cursor-pointer hover:shadow-md hover:shadow-[#1a3aff]/50 hover:bg-[#1a3aff]/80 transition-all duration-200"
+                  >
+                    Add User
+                  </div>
                 </div>
             </div>
 
@@ -189,6 +196,17 @@ export default function AdminDashboard() {
       </div>
       {/* manage departments */}
       <DepartmentList />
+
+      {isAddingUser && (
+        <UserModal 
+          mode="add" 
+          onClose={() => setIsAddingUser(false)} 
+          onSuccess={() => {
+            setIsAddingUser(false);
+            // Optional: refresh admin stats if needed, or simply let the user show up in users tab
+          }} 
+        />
+      )}
     </div>
   );
 }
