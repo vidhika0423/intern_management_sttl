@@ -1,6 +1,6 @@
 'use client'
-
 import { signOut, useSession } from 'next-auth/react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -13,9 +13,11 @@ import {
   Megaphone,
 } from 'lucide-react'
 
+
 export default function Sidebar() {
   const pathname = usePathname()
   const { data: session } = useSession()
+  const canManage = ['admin', 'hr', 'mentor'].includes(session?.user?.role)
 
   const isActive = (href) =>
     pathname === href || (href !== '/' && pathname.startsWith(href))
@@ -59,14 +61,25 @@ export default function Sidebar() {
           Overview
         </Link>
 
-        <Link
-          href="/interns"
-          aria-current={isActive('/interns') ? 'page' : undefined}
-          className={`${linkBase} ${isActive('/interns') ? activeClass : inactiveClass}`}
-        >
-          <Users className={iconClass} />
-          Interns
-        </Link>
+        {canManage ? (
+          <Link
+            href="/interns"
+            aria-current={isActive('/interns') ? 'page' : undefined}
+            className={`${linkBase} ${isActive('/interns') ? activeClass : inactiveClass}`}
+          >
+            <Users className={iconClass} />
+            Interns
+          </Link>
+        ) : (
+            <Link
+             href="/my-profile"
+             aria-current={isActive('/my-profile') ? 'page' : undefined}
+             className={`${linkBase} ${isActive('/my-profile') ? activeClass : inactiveClass}`}
+            >
+              <Users className={iconClass} />
+              My Profile
+            </Link>
+          )}
 
         <Link
           href="/tasks"
@@ -95,14 +108,14 @@ export default function Sidebar() {
           Evaluations
         </Link>
 
-        <Link
+        {canManage && (<Link
           href="/departments"
           aria-current={isActive('/departments') ? 'page' : undefined}
           className={`${linkBase} ${isActive('/departments') ? activeClass : inactiveClass}`}
         >
           <Building className={iconClass} />
           Departments
-        </Link>
+        </Link>)}
 
         <Link
           href="/announcements"
@@ -113,14 +126,14 @@ export default function Sidebar() {
           Announcements
         </Link>
 
-        <Link
+        {canManage && (<Link
           href="/users"
           aria-current={isActive('/users') ? 'page' : undefined}
           className={`${linkBase} ${isActive('/users') ? activeClass : inactiveClass}`}
         >
           <Users className={iconClass} />
           Users
-        </Link>
+        </Link>)}
 
       </nav>
 
@@ -129,8 +142,7 @@ export default function Sidebar() {
         
         <button
           onClick={() => signOut({ callbackUrl: '/' })}
-          className="w-full text-center py-2 rounded-lg text-sm transition
-          hover:border hover:border-red-400 hover:text-red-400"
+          className="w-full text-center py-2 rounded-lg text-sm transition hover:border hover:border-red-400 hover:text-red-400"
         >
           Logout
         </button>
