@@ -49,7 +49,6 @@ export default function AdminDashboard() {
                     </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="bg-[#1a3aff] text-white px-4 py-2 rounded-lg cursor-pointer hover:shadow-md hover:shadow-[#1a3aff]/50 hover:bg-[#1a3aff]/80 transition-all duration-200">Add Department</div>
                   <div 
                     onClick={() => setIsAddingUser(true)}
                     className="bg-[#1a3aff] text-white px-4 py-2 rounded-lg cursor-pointer hover:shadow-md hover:shadow-[#1a3aff]/50 hover:bg-[#1a3aff]/80 transition-all duration-200"

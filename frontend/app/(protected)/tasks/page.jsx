@@ -6,7 +6,7 @@ import { useFormik } from 'formik'
 import { z } from 'zod'
 import { getTasks, createTask, updateTask, deleteTask } from '@/services/TaskApi'
 import { getInterns } from '@/services/InternApi'
-import { Plus, LayoutGrid, List, MoreVertical, Edit2, Trash2, Calendar, User, AlignLeft, AlertCircle, ChevronRight, CheckCircle2, X } from 'lucide-react'
+import { Plus, LayoutGrid, List, MoreVertical, Edit2, Trash2, Calendar, User, AlignLeft, AlertCircle, ChevronRight, CheckCircle2, X, Search, Filter } from 'lucide-react'
 
 const COLUMNS = [
   { key: 'todo', label: 'To Do', color: 'bg-slate-500', dotColor: 'bg-slate-400', borderColor: 'border-slate-200' },
@@ -38,6 +38,9 @@ export default function TasksPage() {
   const [interns, setInterns] = useState([])
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState('kanban')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [priorityFilter, setPriorityFilter] = useState('all')
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -152,6 +155,19 @@ export default function TasksPage() {
     }
   }
 
+  const filteredTasks = tasks.filter(task => {
+    const search = searchTerm.toLowerCase()
+    const matchesSearch = 
+      task.title?.toLowerCase().includes(search) ||
+      task.intern?.userByUserId?.name?.toLowerCase().includes(search) ||
+      task.intern?.department?.name?.toLowerCase().includes(search)
+    
+    const matchesStatus = statusFilter === 'all' || task.status === statusFilter
+    const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter
+    
+    return matchesSearch && matchesStatus && matchesPriority
+  })
+
   const byStatus = (status) => tasks.filter(t => t.status === status)
 
   const TaskCard = ({ task }) => {
@@ -230,31 +246,85 @@ export default function TasksPage() {
 
   return (
     <div className="min-h-screen bg-transparent p-6 lg:p-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">Tasks</h1>
-          <p className="text-sm text-slate-500 mt-1 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
-            {tasks.length} {tasks.length === 1 ? 'task' : 'tasks'}
-          </p>
-        </div>
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-          <div className="flex bg-slate-200/50 p-1 rounded-lg w-full sm:w-auto">
-            <button onClick={() => setView('kanban')} className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${view === 'kanban' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}>
-              <LayoutGrid size={16} /> Kanban
-            </button>
-            <button onClick={() => setView('list')} className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${view === 'list' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}>
-              <List size={16} /> List
-            </button>
+      {/* Header & Controls */}
+      <div className="flex flex-col gap-6 mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Tasks</h1>
+            <p className="text-sm text-slate-500 mt-1 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+              {view === 'kanban' ? tasks.length : filteredTasks.length} {tasks.length === 1 ? 'task' : 'tasks'}
+            </p>
           </div>
-
-          {!isIntern && (
-            <button onClick={() => openModal()} className="flex w-full sm:w-auto items-center justify-center gap-2 bg-(--accent) hover:bg-(--accent-2) text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md shadow-(--accent-2) shrink-0">
-              <Plus size={18} /> New Task
-            </button>
-          )}
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="flex bg-slate-200/50 p-1 rounded-lg w-full sm:w-auto">
+              <button onClick={() => setView('kanban')} className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${view === 'kanban' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}>
+                <LayoutGrid size={16} /> Kanban
+              </button>
+              <button onClick={() => setView('list')} className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${view === 'list' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}>
+                <List size={16} /> List
+              </button>
+            </div>
+            {view === 'kanban' && !isIntern && (
+              <button onClick={() => openModal()} className="flex w-full sm:w-auto items-center justify-center gap-2 bg-(--accent) hover:bg-(--accent-2) text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md shadow-(--accent-2) shrink-0">
+                <Plus size={18} /> New Task
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Filters Bar - Only show in List View, sync UI with Users Page */}
+        {view === 'list' && (
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+            <div className="flex flex-1 flex-col md:flex-row items-center gap-3 w-full">
+              <div className="relative flex-1 w-full md:max-w-md">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Search by task, intern, or department..."
+                  className="w-full pl-10 bg-white pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1a3aff]/20 focus:border-[#1a3aff] transition-all duration-200 text-sm"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              
+              <div className="flex items-center gap-3 w-full md:w-auto">
+                <div className="relative flex-1 md:w-44">
+                  <select
+                    className="w-full pl-3 pr-8 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1a3aff]/20 focus:border-[#1a3aff] transition-all text-sm appearance-none cursor-pointer text-slate-700 font-medium"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                  >
+                    <option value="all">All Status</option>
+                    {COLUMNS.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+                  </select>
+                  <Filter className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
+                </div>
+
+                <div className="relative flex-1 md:w-44">
+                  <select
+                    className="w-full pl-3 pr-8 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1a3aff]/20 focus:border-[#1a3aff] transition-all text-sm appearance-none cursor-pointer text-slate-700 font-medium"
+                    value={priorityFilter}
+                    onChange={(e) => setPriorityFilter(e.target.value)}
+                  >
+                    <option value="all">All Priority</option>
+                    {PRIORITIES.map(p => <option key={p.key} value={p.key}>{p.label}</option>)}
+                  </select>
+                  <Filter className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
+                </div>
+              </div>
+            </div>
+
+            {!isIntern && (
+              <button 
+                onClick={() => openModal()} 
+                className="bg-(--accent) text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:shadow-(--accent-2) hover:bg-(--accent-2) transition-all duration-200 whitespace-nowrap flex items-center justify-center gap-2"
+              >
+                <Plus size={18} /> New Task
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {loading ? (
@@ -265,7 +335,7 @@ export default function TasksPage() {
         /* Kanban View */
         <div className="flex gap-6 overflow-x-auto pb-6">
           {COLUMNS.map(col => (
-            <div key={col.key} className={`flex-shrink-0 w-80 bg-white rounded-2xl p-4 border ${col.borderColor}`}>
+            <div key={col.key} className={`shrink-0 w-80 bg-white rounded-2xl p-4 border ${col.borderColor}`}>
               <div className="flex items-center justify-between mb-4 px-1">
                 <div className="flex items-center gap-2.5">
                   <span className={`w-2.5 h-2.5 rounded-full ${col.dotColor} shadow-sm`}></span>
@@ -301,7 +371,7 @@ export default function TasksPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {tasks.map((task) => {
+                {filteredTasks.map((task) => {
                   const priority = PRIORITIES.find(p => p.key === task.priority) || PRIORITIES[1]
                   return (
                     <tr key={task.id} className="hover:bg-slate-50/50 transition-colors group">
@@ -356,15 +426,17 @@ export default function TasksPage() {
                     </tr>
                   )
                 })}
-                {tasks.length === 0 && (
+                {filteredTasks.length === 0 && (
                   <tr>
                     <td colSpan={isIntern ? 3 : 4} className="px-6 py-16 text-center">
                       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
                         <AlertCircle className="h-8 w-8 text-slate-400" />
                       </div>
-                      <h3 className="text-base font-bold text-slate-800 mb-1">No tasks yet</h3>
+                      <h3 className="text-base font-bold text-slate-800 mb-1">{searchTerm || statusFilter !== 'all' || priorityFilter !== 'all' ? 'No matching tasks' : 'No tasks yet'}</h3>
                       <p className="text-sm text-slate-500 max-w-sm mx-auto">
-                        {isIntern ? "You're all caught up! No tasks assigned to you right now." : "Get started by creating a new task to assign to your interns."}
+                        {searchTerm || statusFilter !== 'all' || priorityFilter !== 'all' 
+                          ? "Try adjusting your search or filters to find what you're looking for." 
+                          : isIntern ? "You're all caught up! No tasks assigned to you right now." : "Get started by creating a new task to assign to your interns."}
                       </p>
                       {!isIntern && (
                         <button onClick={() => openModal()} className="mt-4 inline-flex items-center gap-2 bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition-all">

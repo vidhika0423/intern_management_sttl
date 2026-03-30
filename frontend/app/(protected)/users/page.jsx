@@ -2,13 +2,14 @@
 
 import { getAllUsers } from "@/services/dashboard/AdminStats";
 import { deleteUser } from "@/services/UserApi";
-import { Trash2, UserRoundPen } from "lucide-react";
+import { Search, Trash2, UserRoundPen } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import UserModal from "@/components/dashboard/UserModal";
 
 function UsersPage() {
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [editingUser, setEditingUser] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -34,26 +35,49 @@ function UsersPage() {
     fetchUsers();
   }, []);
 
+  const filteredUsers = users?.filter((user) => {
+    const search = searchTerm.toLowerCase();
+    return (
+      user.name?.toLowerCase().includes(search) ||
+      user.email?.toLowerCase().includes(search) ||
+      user.role?.toLowerCase().includes(search)
+    );
+  });
+
   return (
     <div>
       {loading ? (
         <div>Loading...</div>
       ) : (
         <div className="bg-white p-5 rounded-2xl">
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
             <h2 className="text-2xl font-bold">Manage Users</h2>
-            <button 
-              onClick={() => setIsAdding(true)}
-              className="bg-(--accent) text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-(--accent-2) hover:bg-(--accent-2) transition-all duration-200"
-            >
-              Add User
-            </button>
+            <div className="flex flex-1 md:max-w-md items-center gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Search by name, email, or role..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1a3aff]/20 focus:border-[#1a3aff] transition-all duration-200 text-sm"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <button 
+                onClick={() => setIsAdding(true)}
+                className="bg-(--accent) text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-(--accent-2) hover:bg-(--accent-2) transition-all duration-200 whitespace-nowrap"
+              >
+                Add User
+              </button>
+            </div>
           </div>
           <div className="flex flex-col gap-4">
-            {users?.length <= 0 ? (
-              <div>No users found</div>
+            {filteredUsers?.length <= 0 ? (
+              <div className="text-center py-10 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                {searchTerm ? `No users found matching "${searchTerm}"` : "No users found"}
+              </div>
             ) : (
-              users?.map((user) => (
+              filteredUsers?.map((user) => (
               <div
                 key={user.id}
                 className="flex justify-between border border-gray-200 p-2 rounded-lg px-4 py-2 hover:shadow-md hover:border-[#1a3aff]/20 hover:shadow-[#1a3aff]/20 transition-all duration-200"
