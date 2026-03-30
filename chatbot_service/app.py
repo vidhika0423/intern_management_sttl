@@ -83,6 +83,15 @@ app.add_middleware(
 
 # ── Endpoints ──────────────────────────────────────────────────────────
 
+@app.get("/")
+async def root():
+    """Root endpoint."""
+    return {
+        "message": "InternHub AI Server is running",
+        "version": "1.0.0",
+        "endpoints": ["/health", "/docs", "/api/v0/config", "/api/v0/generate_sql", "/api/v0/run_sql", "/api/v0/ask"]
+    }
+
 @app.get("/api/v0/config")
 async def get_config():
     """Vanna-chat compatible discovery endpoint."""
