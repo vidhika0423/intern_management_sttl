@@ -1,6 +1,7 @@
 "use client"
 
 import Sidebar from '@/components/Sidebar'
+import ChatbotWidget from '@/components/chatbot/ChatbotWidget'
 import React from 'react'
 import { useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
@@ -27,6 +28,7 @@ function layout({ children }) {
             >
                 {children}
             </div>
+            <ChatbotWidget />
         </div>
     )
 }
