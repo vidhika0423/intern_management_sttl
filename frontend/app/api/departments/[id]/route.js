@@ -45,5 +45,4 @@ export async function GET(request, context) {
     return NextResponse.json({ error: error.message, ok: false }, { status: 500 });
   }
 }
-frontend/app/api/interns/[id]/route.js
-frontend/app/api/interns/[id]/route.js
+

@@ -1,6 +1,7 @@
 import SessionWrapper from '@/utils/SessionWrapper'
 import './globals.css'
 import Sidebar from '@/components/Sidebar'
+import { Toaster } from 'react-hot-toast'
 
 export const metadata = {
   title: 'InternOS',
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
         <div>
           <SessionWrapper>
           <main>
+            <Toaster />
             {children}
           </main>
           </SessionWrapper>

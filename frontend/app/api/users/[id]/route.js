@@ -27,14 +27,14 @@ export const POST = async (req, res) => {
   try {
     const session = await requireAuth(req, ["admin"])
     if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 })
     }
     const { id, name, email, role } = await req.json()
     const updatedUser = await gqlFetch(UPDATE_USER, { id, name, email, role })
-    return NextResponse.json({ ok:true, data: updatedUser, message:"user updated successfully" })
+    return NextResponse.json({ ok: true, data: updatedUser?.update_users_by_pk, message: "User updated successfully" })
   } catch (error) {
     console.error(error)
-    return NextResponse.json({ ok: false, error: error.message, message: "Something went wrong" }, { status: 500 });
+    return NextResponse.json({ ok: false, message: error.message || "Something went wrong" }, { status: 500 });
   }
 }
 
@@ -42,13 +42,13 @@ export const DELETE = async (req, res) => {
   try {
     const session = await requireAuth(req, ["admin"])
     if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 })
     }
     const { id } = await req.json()
     const deletedUser = await gqlFetch(DELETE_USER, { id })
-    return NextResponse.json({ ok:true, data: deletedUser, message:"user deleted successfully" })
+    return NextResponse.json({ ok: true, data: deletedUser?.delete_users_by_pk, message: "User deleted successfully" })
   } catch (error) {
     console.error(error)
-    return NextResponse.json({ ok: false, error: error.message, message: "Something went wrong" }, { status: 500 });
+    return NextResponse.json({ ok: false, message: error.message || "Something went wrong" }, { status: 500 });
   }
 }

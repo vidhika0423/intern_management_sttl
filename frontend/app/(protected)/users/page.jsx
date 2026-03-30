@@ -16,11 +16,15 @@ function UsersPage() {
   const fetchUsers = () => {
     setLoading(true);
     getAllUsers()
-      .then((data) => {
-        const filterUsers = data?.data?.users?.filter(
-          (user) => user.role !== "admin",
-        );
-        setUsers(filterUsers);
+      .then((res) => {
+        if (res.ok) {
+          const filterUsers = res.data?.filter(
+            (user) => user.role !== "admin",
+          );
+          setUsers(filterUsers || []);
+        } else {
+          console.error(res.message);
+        }
       })
       .catch(console.error)
       .finally(() => setLoading(false));

@@ -33,13 +33,13 @@ export const GET = async (req) => {
     try {
         const session = await requireAuth(req, ["admin", "hr"])
         if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+            return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 })
         }
         const users = await gqlFetch(GET_ALL_USERS)
-        return NextResponse.json({ data: users })
+        return NextResponse.json({ ok: true, data: users?.users || [], message: "Users fetched successfully" })
     } catch (error) {
         console.log(error)
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+        return NextResponse.json({ ok: false, message: error.message || "Internal server error" }, { status: 500 })
     }
 }
 
@@ -47,14 +47,14 @@ export const POST = async (req) => {
     try {
         const session = await requireAuth(req, ["admin", "hr"])
         if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+            return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 })
         }
         
         const body = await req.json();
         const { name, email, password, role } = body;
         
         if (!name || !email || !password || !role) {
-            return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+            return NextResponse.json({ ok: false, message: "Missing required fields" }, { status: 400 })
         }
 
         const bcrypt = require('bcrypt');
@@ -64,12 +64,12 @@ export const POST = async (req) => {
         const result = await gqlFetch(CREATE_USER, variables);
         
         if (result?.errors) {
-            return NextResponse.json({ error: result.errors[0].message }, { status: 400 })
+            return NextResponse.json({ ok: false, message: result.errors[0].message }, { status: 400 })
         }
 
-        return NextResponse.json({ data: result.insert_users_one })
+        return NextResponse.json({ ok: true, data: result.insert_users_one, message: "User created successfully" })
     } catch (error) {
         console.error(error)
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+        return NextResponse.json({ ok: false, message: error.message || "Internal server error" }, { status: 500 })
     }
 }

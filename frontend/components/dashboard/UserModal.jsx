@@ -48,8 +48,8 @@ export default function UserModal({ mode, initialData, onClose, onSuccess }) {
           res = await updateUser(initialData.id, values.name, values.email, values.role);
         }
 
-        if (res.error) {
-          throw new Error(res.error);
+        if (!res.ok) {
+          throw new Error(res.message || "Something went wrong");
         }
         
         onSuccess(res.data);

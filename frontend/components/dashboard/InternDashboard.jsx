@@ -3,12 +3,14 @@
 import { getInternDataById } from '@/services/dashboard/InternData';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react'
+import ChangePassword from './ChangePassword';
 
 function InternDashboard() {
 
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false)
     const { data: session, status } = useSession();
 
     useEffect(() => {
@@ -112,12 +114,27 @@ function InternDashboard() {
                         )}
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className='flex gap-2'>
+                    <div className="flex items-center gap-3">
                     <span className={`px-4 py-2 rounded-xl text-sm font-semibold border uppercase tracking-wide
                         ${intern.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}>
                         {intern.status}
                     </span>
                 </div>
+                <div>
+                    <button onClick={() => setIsChangePasswordOpen(true)} className="bg-[#1a3aff] text-white px-4 py-2 rounded-lg cursor-pointer hover:shadow-md hover:shadow-[#1a3aff]/50 hover:bg-[#1a3aff]/80 transition-all duration-200">Change Password</button>
+                </div>
+                </div>
+
+            </div>
+
+            <div>
+                {isChangePasswordOpen && (
+                    <ChangePassword
+                        userId={session?.user?.id}
+                        onClose={() => setIsChangePasswordOpen(false)}
+                    />
+                )}
             </div>
 
             {/* Attendance quick stats */}
