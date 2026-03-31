@@ -172,7 +172,7 @@ export default function InternsPage() {
       console.log('Departments data:', dRes?.data?.departments)
 
       setInterns(iRes?.interns ?? [])
-      setAllUsers(uRes?.data?.users ?? [])
+      setAllUsers(uRes?.data ?? [])
       setDepts(dRes?.data?.departments ?? [])
     } catch {
       showToast('Failed to load data', false)
