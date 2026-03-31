@@ -194,6 +194,31 @@ GOLDEN_QUERIES = [
             ORDER BY intern_count DESC;
         """
     },
+    {
+        "question": "Show all announcements",
+        "sql": """
+            SELECT a.id, u.name AS created_by, a.title, a.body, a.audience
+            FROM public.announcements a
+            LEFT JOIN public.users u ON a.created_by = u.id
+            ORDER BY a.created_at DESC;
+        """
+    },
+    {
+        "question": "Show all announcements with creator information",
+        "sql": """
+            SELECT a.id, u.name AS created_by, a.title, a.body, a.audience, a.created_at
+            FROM public.announcements a
+            LEFT JOIN public.users u ON a.created_by = u.id;
+        """
+    },
+    {
+        "question": "List all announcements and who created them",
+        "sql": """
+            SELECT u.name AS created_by, a.title, a.body, a.audience
+            FROM public.announcements a
+            LEFT JOIN public.users u ON a.created_by = u.id;
+        """
+    },
 ]
 
 def run_training():

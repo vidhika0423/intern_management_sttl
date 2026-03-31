@@ -19,7 +19,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-from vanna_setup import vn, connect_to_postgres
+from vanna_setup import vn, connect_to_postgres, train_relationships
 
 load_dotenv()
 
@@ -65,8 +65,9 @@ async def lifespan(app: FastAPI):
     logger.info("Starting up InternHub AI Server (TESTING MODE - AUTH DISABLED)")
     try:
         connect_to_postgres()
+        train_relationships()
     except Exception as e:
-        logger.error(f"Postgres connection failed: {e}")
+        logger.error(f"Initialization failed: {e}")
     yield
     logger.info("Shutting down InternHub AI Server.")
 

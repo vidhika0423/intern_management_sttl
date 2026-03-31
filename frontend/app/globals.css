@@ -479,39 +479,161 @@ body {
 }
 
 .chatbot-table {
-  margin-top: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
   border-radius: 12px;
-  border: 1px solid rgba(15, 26, 74, 0.12);
+  border: 1px solid rgba(26, 58, 255, 0.15);
   overflow: hidden;
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.5;
   background: var(--bg-surface);
+  box-shadow: 0 2px 8px rgba(26, 58, 255, 0.06);
+  table-layout: auto;
 }
 
-.chatbot-table-head,
-.chatbot-table-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-  gap: 8px;
-  padding: 8px 10px;
-  align-items: start;
+.chatbot-table thead {
+  background: linear-gradient(135deg, rgba(26, 58, 255, 0.12), rgba(26, 58, 255, 0.06));
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 2px solid rgba(26, 58, 255, 0.2);
 }
 
-.chatbot-table-head {
-  background: rgba(26,58,255,0.08);
-  font-weight: 600;
+.chatbot-table th {
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 700;
   text-transform: capitalize;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: rgba(26, 58, 255, 0.9);
+  word-break: break-word;
+  vertical-align: middle;
+  border-right: 1px solid rgba(26, 58, 255, 0.1);
 }
 
-.chatbot-table-row {
-  border-top: 1px solid rgba(15, 26, 74, 0.08);
-  background: var(--bg-surface);
+.chatbot-table th:last-child {
+  border-right: none;
 }
 
-.chatbot-table-head span,
-.chatbot-table-row span {
-  min-width: 0;
+.chatbot-table tbody {
+  display: table-row-group;
+}
+
+.chatbot-table-body {
+  max-height: 320px;
+  overflow-y: auto;
+  display: table-row-group;
+}
+
+.chatbot-table tr {
+  border-bottom: 1px solid rgba(15, 26, 74, 0.08);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chatbot-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.chatbot-table tbody tr:nth-child(odd) {
+  background-color: rgba(26, 58, 255, 0.02);
+}
+
+.chatbot-table tbody tr:hover {
+  background-color: rgba(26, 58, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(26, 58, 255, 0.1);
+}
+
+.chatbot-table td {
+  padding: 11px 14px;
+  text-align: left;
+  color: var(--text-primary);
   word-break: break-word;
   white-space: normal;
+  overflow-wrap: break-word;
+  border-right: 1px solid rgba(26, 58, 255, 0.05);
+  vertical-align: middle;
+  font-weight: 500;
+}
+
+.chatbot-table td:last-child {
+  border-right: none;
+}
+
+/* Column type-specific alignment */
+.chatbot-table td:has(> *:only-child:is([data-type="number"])),
+.chatbot-table th:has(> *:only-child:is([data-type="number"])) {
+  text-align: right;
+  padding-right: 20px;
+}
+
+.chatbot-table td:has(> *:only-child:is([data-type="date"])),
+.chatbot-table th:has(> *:only-child:is([data-type="date"])) {
+  text-align: center;
+}
+
+/* Responsive behavior for small screens */
+@media (max-width: 768px) {
+  .chatbot-table {
+    font-size: 12px;
+  }
+
+  .chatbot-table th,
+  .chatbot-table td {
+    padding: 10px 12px;
+  }
+
+  .chatbot-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chatbot-table thead,
+  .chatbot-table tbody,
+  .chatbot-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .chatbot-table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .chatbot-table tr {
+    margin-bottom: 12px;
+    border: 1px solid rgba(26, 58, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px;
+  }
+
+  .chatbot-table td {
+    display: block;
+    text-align: right;
+    padding-left: 50%;
+    padding-right: 12px;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid rgba(26, 58, 255, 0.08);
+  }
+
+  .chatbot-table td:last-child {
+    border-bottom: none;
+  }
+
+  .chatbot-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 8px;
+    font-weight: 700;
+    color: rgba(26, 58, 255, 0.9);
+    text-transform: capitalize;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
 }
 
 .chatbot-error {

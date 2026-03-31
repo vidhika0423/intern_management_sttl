@@ -96,3 +96,22 @@ def connect_to_postgres() -> None:
         port=port,
     )
     logger.info("Successfully connected to PostgreSQL")
+
+def train_relationships() -> None:
+    """Train Vanna with minimal relationship information during startup."""
+    logger.info("Training Vanna with basic relationship documentation...")
+    
+    # Minimal table relationship documentation
+    docs = [
+        "announcements.created_by is a foreign key to users.id. Always JOIN announcements with users to get the creator's name instead of ID.",
+        "interns.user_id references users.id (the intern account). interns.mentor_id references users.id (the mentor). interns.department_id references departments.id.",
+        "tasks.intern_id references interns.id. tasks.assigned_by references users.id (who assigned the task).",
+        "evaluations.intern_id references interns.id. evaluations.evaluator_id references users.id.",
+        "departments.head_user_id references users.id (the department head).",
+    ]
+    
+    for doc in docs:
+        try:
+            vn.train(documentation=doc)
+        except Exception as e:
+            logger.debug(f"Training doc skipped: {e}")
