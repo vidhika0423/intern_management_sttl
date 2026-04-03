@@ -135,6 +135,16 @@ export default function Sidebar() {
           Users
         </Link>)}
 
+        {(canManage && session?.user?.role !== "mentor")  && (
+          <Link
+            href="/users"
+            aria-current={isActive("/users") ? "page" : undefined}
+            className={`${linkBase} ${isActive("/users") ? activeClass : inactiveClass}`}
+          >
+            <Users className={iconClass} />
+            Users
+          </Link>
+        )}
       </nav>
 
       {/* Footer */}
