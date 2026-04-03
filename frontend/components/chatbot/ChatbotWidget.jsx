@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSession } from 'next-auth/react'
+import DataTable from './DataTable'
 
 const ROLE_ALLOWLIST = new Set(['admin', 'mentor', 'hr'])
 const HIDDEN_COLUMNS = new Set([
@@ -13,11 +14,12 @@ const HIDDEN_COLUMNS = new Set([
   'assigned_by',
   'created_at',
   'updated_at',
+  'password',
+  'password_hash',
+  'api_key',
+  'secret',
+  'token',
 ])
-
-function formatResultRow(row, columns) {
-  return columns.map((col) => String(row[col] ?? ''))
-}
 
 function pickVisibleColumns(columns) {
   return columns.filter((col) => !HIDDEN_COLUMNS.has(col))
@@ -33,6 +35,18 @@ function formatAnswer(results, columns) {
   }
 
   return `Found ${results.length} result(s).`
+}
+
+function detectSensitiveQuery(sql) {
+  const sensitiveTables = ['users', 'password']
+  const sensitiveColumns = ['password', 'password_hash', 'api_key', 'secret', 'token']
+  
+  const sqlLower = sql.toLowerCase()
+  
+  const hasSensitiveTable = sensitiveTables.some(table => sqlLower.includes(`${table}`))
+  const hasSensitiveColumn = sensitiveColumns.some(col => sqlLower.includes(`${col}`))
+  
+  return hasSensitiveTable || hasSensitiveColumn
 }
 
 export default function ChatbotWidget() {
@@ -136,6 +150,22 @@ export default function ChatbotWidget() {
               <div key={msg.id} className={`chatbot-message ${msg.role}`}>
                 <div className="chatbot-bubble">
                   <p>{msg.content}</p>
+                  
+                  {/* Security Warning for Sensitive Queries */}
+                  {msg.sql && !msg.error && detectSensitiveQuery(msg.sql) && (
+                    <div style={{
+                      marginTop: '8px',
+                      padding: '6px 10px',
+                      borderRadius: '6px',
+                      background: 'rgba(251, 191, 36, 0.12)',
+                      border: '1px solid rgba(251, 191, 36, 0.25)',
+                      fontSize: '11px',
+                      color: 'rgba(120, 53, 15, 0.85)',
+                    }}>
+                      ⚠️ Sensitive columns filtered
+                    </div>
+                  )}
+                  
                   {msg.sql ? (
                     <details className="chatbot-sql">
                       <summary>SQL</summary>
@@ -143,21 +173,16 @@ export default function ChatbotWidget() {
                     </details>
                   ) : null}
                   {msg.columns?.length ? (
-                    <div className="chatbot-table">
-                      <div className="chatbot-table-head">
-                        {msg.columns.map((col) => (
-                          <span key={col}>{col}</span>
-                        ))}
-                      </div>
-                      <div className="chatbot-table-body">
-                        {msg.results.map((row, rowIndex) => (
-                          <div key={`${msg.id}-${rowIndex}`} className="chatbot-table-row">
-                            {formatResultRow(row, msg.columns).map((cell, cellIndex) => (
-                              <span key={`${msg.id}-${rowIndex}-${cellIndex}`}>{cell}</span>
-                            ))}
-                          </div>
-                        ))}
-                      </div>
+                    <div className="mt-4 -mx-4 px-4">
+                      <DataTable
+                        data={msg.results}
+                        columns={msg.columns}
+                        showSearch={false}
+                        showPagination={msg.results.length > 10}
+                        pageSize={10}
+                        emptyMessage="No data found"
+                        className="text-sm"
+                      />
                     </div>
                   ) : null}
                 </div>
