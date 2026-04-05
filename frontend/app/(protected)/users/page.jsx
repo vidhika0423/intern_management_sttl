@@ -5,6 +5,7 @@ import { deleteUser } from "@/services/UserApi";
 import { Search, Trash2, UserRoundPen } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import UserModal from "@/components/dashboard/UserModal";
+import { useSession } from "next-auth/react";
 
 function UsersPage() {
   const [users, setUsers] = useState();
@@ -13,6 +14,7 @@ function UsersPage() {
   const [editingUser, setEditingUser] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const { data: session } = useSession();
 
   const fetchUsers = () => {
     setLoading(true);
@@ -96,12 +98,14 @@ function UsersPage() {
                   >
                     <UserRoundPen className="text-blue-500" size={20} />
                   </div>
-                  <div 
+                  {session?.user?.role === "admin" && (
+                    <div 
                     className="cursor-pointer p-1 rounded hover:scale-110 transition-all duration-200"
                     onClick={() => setConfirmDelete(user.id)}
                   >
                     <Trash2 className="text-red-500" size={20} />
                   </div>
+                  )}
 
                   {confirmDelete === user.id && (
                     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">

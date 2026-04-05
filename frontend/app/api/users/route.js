@@ -1,6 +1,15 @@
 import { gqlFetch } from "@/lib/graphql-client"
 import { requireAuth } from "@/lib/middleware/RequireRole"
 import { NextResponse } from "next/server"
+import { z } from "zod"
+
+const userSchema = z.object({
+    name: z.string().min(3, "Name must be at least 3 characters"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    role: z.enum(["admin", "hr", "mentor", "intern"])
+})
+
 
 const GET_ALL_USERS = `
     query GetAllUsers {
@@ -53,8 +62,9 @@ export const POST = async (req) => {
         const body = await req.json();
         const { name, email, password, role } = body;
         
-        if (!name || !email || !password || !role) {
-            return NextResponse.json({ ok: false, message: "Missing required fields" }, { status: 400 })
+        const validation = userSchema.safeParse({ name, email, password, role });
+        if (!validation.success) {
+            return NextResponse.json({ ok: false, message: validation.error.message }, { status: 400 })
         }
 
         const bcrypt = require('bcrypt');

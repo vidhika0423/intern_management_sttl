@@ -55,7 +55,7 @@ export default function HRDashboard() {
             onClick={() => setIsAddingUser(true)}
             className="bg-[#1a3aff] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-[#1a3aff]/30 hover:bg-[#1a3aff]/90 transition-all duration-200 whitespace-nowrap"
           >
-            Add User / Intern
+            Add Intern
           </button>
           <button className="bg-white text-[#1a3aff] border border-[#1a3aff] px-5 py-2.5 rounded-lg text-sm font-medium hover:shadow-lg hover:bg-gray-50 transition-all duration-200 whitespace-nowrap">
             Edit Intern Details
@@ -149,9 +149,6 @@ export default function HRDashboard() {
                      `}>
                        {intern.status}
                      </span>
-                     <button className="text-[12px] px-3 py-1.5 rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-[#1a3aff] hover:border-[#1a3aff] transition-colors whitespace-nowrap">
-                        ✎ Edit
-                     </button>
                   </div>
                 </div>
               ))

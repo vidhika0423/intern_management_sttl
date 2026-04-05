@@ -5,9 +5,10 @@ import { useFormik } from "formik";
 import { z } from "zod";
 import { createUser, updateUser } from "@/services/UserApi";
 import { X } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 const userSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(3, "Name must be at least 3 characters"),
   email: z.string().email("Invalid email address"),
   role: z.enum(["admin", "hr", "mentor", "intern"], { errorMap: () => ({ message: "Please select a valid role" }) }),
   password: z.string().optional(),
@@ -16,6 +17,7 @@ const userSchema = z.object({
 export default function UserModal({ mode, initialData, onClose, onSuccess }) {
   const overlayRef = useRef(null);
   const [serverError, setServerError] = useState(null);
+  const { data:session} = useSession();
 
   const formik = useFormik({
     initialValues: {
@@ -128,7 +130,19 @@ export default function UserModal({ mode, initialData, onClose, onSuccess }) {
 
             <div>
               <label className="label block text-sm font-semibold mb-1">Role *</label>
-              <select
+              {session?.user?.role === "hr" ? (
+                <select
+                className="input w-full border border-gray-200 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1a3aff]/30"
+                name="role"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.role}
+              >
+                <option value="">Select a role...</option>
+                <option value="intern">Intern</option>
+              </select>
+              ) : (
+                <select
                 className="input w-full border border-gray-200 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1a3aff]/30"
                 name="role"
                 onChange={formik.handleChange}
@@ -141,6 +155,7 @@ export default function UserModal({ mode, initialData, onClose, onSuccess }) {
                 <option value="mentor">Mentor</option>
                 <option value="intern">Intern</option>
               </select>
+              )}
               {formik.touched.role && formik.errors.role && (
                 <div style={{ color: "#ef4444", fontSize: "12px", marginTop: "4px" }}>{formik.errors.role}</div>
               )}

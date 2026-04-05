@@ -137,7 +137,7 @@ export default function Sidebar() {
           </Link>
         )}
 
-        {canManage && (
+        {(canManage && session?.user?.role !== "mentor")  && (
           <Link
             href="/users"
             aria-current={isActive("/users") ? "page" : undefined}
