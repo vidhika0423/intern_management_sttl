@@ -22,18 +22,6 @@ const ROLE_STYLE = {
   intern: { color: '#0284c7', bg: 'rgba(2,132,199,0.08)',  label: 'Intern — View only'   },
 }
 
-function timeAgo(dateStr) {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const m = Math.floor(diff / 60000)
-  if (m < 1)  return 'just now'
-  if (m < 60) return `${m}m ago`
-  const h = Math.floor(m / 60)
-  if (h < 24) return `${h}h ago`
-  const d = Math.floor(h / 24)
-  if (d < 7)  return `${d}d ago`
-  return new Date(dateStr).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-}
-
 
 function canManage(role) {
   return role === 'admin' || role === 'hr'
@@ -479,7 +467,7 @@ export default function AnnouncementsPage() {
                         <span style={{ color: 'var(--text-secondary)', fontWeight: '600' }}>
                           {item.user?.name ?? 'Admin'}
                         </span>
-                        {' · '}{timeAgo(item.created_at)}
+                        {' · '}{new Date(item.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                       </p>
                     </div>
 
