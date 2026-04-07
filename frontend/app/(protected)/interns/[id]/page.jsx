@@ -316,59 +316,6 @@ export default function InternDetail() {
 
         {/* ── RIGHT column ── */}
         <div>
-          <Section title={`Tasks (${tasksTotal})`}>
-            {tasksTotal === 0
-              ? <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>No tasks assigned yet.</p>
-              : intern.tasks.map(task => (
-                <div key={task.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
-                  <span style={{ width: 7, height: 7, borderRadius: '50%', flexShrink: 0, marginTop: 5, background: PRIORITY_COLORS[task.priority] }} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: '500', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{task.title}</p>
-                    {task.due_date && <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>Due {new Date(task.due_date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</p>}
-                  </div>
-                  <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: '10px', fontWeight: '600', textTransform: 'uppercase', background: `${TASK_STATUS_COLORS[task.status]}22`, color: TASK_STATUS_COLORS[task.status], flexShrink: 0 }}>
-                    {task.status.replace('_', ' ')}
-                  </span>
-                </div>
-              ))
-            }
-          </Section>
-
-          <Section title={`Attendance (last ${intern.attendances?.length ?? 0} records)`}>
-            {!intern.attendances?.length
-              ? <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>No records yet.</p>
-              : (
-                <>
-                  {/* Mini summary pills */}
-                  <div style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
-                    {['present','absent','half_day','wfh'].map(s => {
-                      const count = intern.attendances.filter(a => a.status === s).length
-                      if (!count) return null
-                      return (
-                        <span key={s} style={{ padding: '3px 10px', borderRadius: '99px', fontSize: '11px', fontWeight: '600', background: `${ATT_COLORS[s]}22`, color: ATT_COLORS[s] }}>
-                          {s.replace('_', ' ')} · {count}
-                        </span>
-                      )
-                    })}
-                  </div>
-                  {intern.attendances.map(a => (
-                    <div key={a.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
-                      <span style={{ fontSize: '13px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
-                        {new Date(a.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
-                      </span>
-                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        {a.check_in && <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{a.check_in}–{a.check_out ?? '?'}</span>}
-                        <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: '10px', fontWeight: '600', textTransform: 'uppercase', background: `${ATT_COLORS[a.status]}22`, color: ATT_COLORS[a.status] }}>
-                          {a.status.replace('_', ' ')}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </>
-              )
-            }
-          </Section>
-
           {/* All evaluations list (if more than 1) */}
           {intern.evaluations?.length > 1 && (
             <Section title={`All evaluations (${intern.evaluations.length})`}>
