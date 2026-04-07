@@ -156,9 +156,9 @@ function InternDashboard() {
                 </div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6">
                 {/* Left Column */}
-                <div className="flex flex-col gap-6 lg:col-span-1">
+                <div className="flex flex-col gap-6">
 
                     {/* Personal Information */}
                     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -239,54 +239,6 @@ function InternDashboard() {
                     </div>
                 </div>
 
-                {/* Right Column: Tasks */}
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:col-span-2">
-                    <div className="flex justify-between items-center mb-5">
-                        <h2 className="text-lg font-bold text-gray-900">Assigned Tasks</h2>
-                        <span className="bg-gray-100 text-gray-700 text-xs font-bold px-2.5 py-1 rounded-full border border-gray-200">
-                            {tasks.length} Total
-                        </span>
-                    </div>
-
-                    {tasks.length > 0 ? (
-                        <div className="flex flex-col gap-4">
-                            {tasks.map((task, index) => (
-                                <div key={task.id ?? index} className="p-5 rounded-xl border border-gray-200 hover:border-[#1a3aff]/30 hover:shadow-md transition-all duration-200 bg-white group">
-                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-                                        <h3 className="text-base font-bold text-gray-900 group-hover:text-[#1a3aff] transition-colors line-clamp-2">
-                                            {task.title || task.description}
-                                        </h3>
-                                        <span className={`text-xs font-bold px-3 py-1.5 rounded-full border whitespace-nowrap ${getStatusColor(task.status)} capitalize`}>
-                                            {task.status?.replace('_', ' ')}
-                                        </span>
-                                    </div>
-                                    <div className="flex flex-wrap items-center gap-5 text-sm pt-3 border-t border-gray-50">
-                                        {task.due_date && (
-                                            <div className="flex items-center gap-2">
-                                                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                </svg>
-                                                <span className="font-medium text-gray-600">
-                                                    {new Date(task.due_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-                                                </span>
-                                            </div>
-                                        )}
-                                        {task.priority && (
-                                            <span className={`text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider ${getPriorityColor(task.priority)}`}>
-                                                {task.priority}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="flex flex-col items-center justify-center p-10 text-center">
-                            <p className="text-gray-700 font-bold">No tasks assigned yet</p>
-                            <p className="text-sm text-gray-500 mt-1">You're all caught up! Check back later for new assignments.</p>
-                        </div>
-                    )}
-                </div>
             </div>
         </div>
     )
