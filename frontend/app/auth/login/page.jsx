@@ -52,7 +52,7 @@ function page() {
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-5 px-2 py-2"
+          className="flex flex-col gap- px-2 py-2"
         >
           {/* EMAIL */}
           <div className="w-full flex flex-col mb-6">
@@ -76,7 +76,7 @@ function page() {
             name="password" 
             className="bg-[#f0f4ff] p-2 rounded-lg border border-gray-300"
             type="password"
-            placeholder="Enter Password"
+            placeholder="••••••••••••"
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.password}
@@ -89,6 +89,9 @@ function page() {
           {/* ERROR MESSAGE */}
           {error && <p className="text-red-500">{error}</p>}
 
+          <div className="flex justify-end">
+            <Link className="text-[#6366f1]" href="/auth/forgot-password">Forgot Password?</Link>
+          </div>
           <button
             className="bg-[#6366f1] text-white font-semibold cursor-pointer py-2 rounded-lg mt-5"
             type="submit"
