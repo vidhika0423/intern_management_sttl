@@ -50,23 +50,19 @@ export const authOptions = {
         }
 
         const user = data?.users?.[0];
-        console.log("User:", user);
 
         if (!user) {
           console.log("User not found");
           return null;
         }
 
-        
-        
-        // 🔐 Password check
+
+
+        // Password check
         const isValid = await bcrypt.compare(
           credentials.password,
           user.password_hash
         );
-        console.log("here");
-
-        console.log("Password match:", isValid);
 
         if (!isValid) return null;
 
