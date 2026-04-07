@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server'
 import { gqlFetch } from '@/lib/graphql-client'
 import { requireAuth } from '@/lib/middleware/RequireRole'
 
-// ── Queries ──────────────────────────────────────────────────────────────────
-
 const GET_DEPARTMENTS = `
   query GetDepartments {
     departments(order_by: { name: asc }) {
@@ -56,36 +54,22 @@ const DELETE_DEPARTMENT = `
   }
 `
 
-// ── Handlers ─────────────────────────────────────────────────────────────────
-
-// export async function GET(req) {
-//   const session = await requireAuth(req, ['admin', 'hr', 'mentor'])
-//   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-//   try {
-//     const data = await gqlFetch(GET_DEPARTMENTS)
-//     return NextResponse.json(data ?? { departments: [] })
-//   } catch (error) {
-//     console.error('[departments GET]', error.message)
-//     return NextResponse.json({ departments: [] })
-//   }
-// }
 export async function GET(req) {
   const session = await requireAuth(req, ['admin', 'hr', 'mentor'])
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!session) return NextResponse.json({ ok: false, departments: [] }, { status: 401 })
   try {
     const data = await gqlFetch(GET_DEPARTMENTS)
-    return NextResponse.json({ 
-      data: data ?? { departments: [] }  // Wrap in 'data' property
-    })
+    console.log('[departments GET] data:', JSON.stringify(data))
+    return NextResponse.json({ ok: true, departments: data?.departments ?? [] })
   } catch (error) {
-    console.error('[departments GET]', error.message)
-    return NextResponse.json({ data: { departments: [] } })  // Also wrap error response
+    console.error('[departments GET] error:', error.message)
+    return NextResponse.json({ ok: false, departments: [], error: error.message })
   }
 }
 
 export async function POST(req) {
   const session = await requireAuth(req, ['admin','hr'])
-  if (!session) return NextResponse.json({ error: 'Unauthorized — admin only' }, { status: 401 })
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   try {
     const { name, description, head_user_id } = await req.json()
     if (!name?.trim()) return NextResponse.json({ error: 'name is required' }, { status: 400 })
@@ -103,7 +87,7 @@ export async function POST(req) {
 
 export async function PATCH(req) {
   const session = await requireAuth(req, ['admin','hr'])
-  if (!session) return NextResponse.json({ error: 'Unauthorized — admin only' }, { status: 401 })
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   try {
     const { id, name, description, head_user_id } = await req.json()
     if (!id || !name?.trim()) return NextResponse.json({ error: 'id and name required' }, { status: 400 })
@@ -122,7 +106,7 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
   const session = await requireAuth(req, ['admin','hr'])
-  if (!session) return NextResponse.json({ error: 'Unauthorized — admin only' }, { status: 401 })
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   try {
     const { id } = await req.json()
     if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 })

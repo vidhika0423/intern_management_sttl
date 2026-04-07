@@ -222,12 +222,14 @@ export default function DepartmentsPage() {
   const loadAll = useCallback(async () => {
     setLoading(true)
     try {
-      const [dRes, uRes] = await Promise.all([
+      const [dResult, uResult] = await Promise.allSettled([
         fetch('/api/departments').then(r => r.json()),
         fetch('/api/users').then(r => r.json()),
       ])
-      setDepts(dRes?.data?.departments ?? [])
-      setUsers(uRes?.data?.users ?? [])
+      const dRes = dResult.status === 'fulfilled' ? dResult.value : {}
+      const uRes = uResult.status === 'fulfilled' ? uResult.value : {}
+      setDepts(dRes?.departments ?? [])
+      setUsers(uRes?.data ?? [])
     } catch {
       showToast('Failed to load data', false)
     } finally {
