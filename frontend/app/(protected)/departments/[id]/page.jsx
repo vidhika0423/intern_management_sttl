@@ -19,16 +19,13 @@ export default function DepartmentDetailPage() {
   useEffect(() => {
     if (!id) return
 
-    // Fetch all departments and find the one matching this id
-    fetch('/api/departments')
+    fetch(`/api/departments/${id}`)
       .then(r => r.json())
       .then(json => {
-        const departments = json?.data?.departments ?? []
-        const found = departments.find(d => d.id === id)
-        if (!found) {
-          setError('Department not found')
+        if (!json.ok || !json.department) {
+          setError(json.error || 'Department not found')
         } else {
-          setDept(found)
+          setDept(json.department)
         }
       })
       .catch(err => setError(err.message))

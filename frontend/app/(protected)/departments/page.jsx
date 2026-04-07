@@ -121,7 +121,7 @@ function DeptForm({ initial, mentors, takenMentors, onSave, onClose, saving }) {
 
 function ChangeMentorModal({ dept, mentors, takenMentors, saving, onClose, onSave }) {
   // Pre-fill with the currently assigned mentor (if any)
-  const [selectedMentorId, setSelectedMentorId] = useState(dept.user?.id ?? '')
+  const [selectedMentorId, setSelectedMentorId] = useState(dept.head_user_id ?? '')
 
   const currentMentorName = dept.user?.name ?? null
 
@@ -468,7 +468,7 @@ export default function DepartmentsPage() {
                         id:           dept.id,
                         name:         dept.name,
                         description:  dept.description ?? '',
-                        head_user_id: dept.user?.id ?? '',
+                        head_user_id: dept.head_user_id ?? '',
                       })}
                     >
                       Edit

@@ -2,26 +2,29 @@ import { gqlFetch } from "@/lib/graphql-client";
 import { requireAuth } from "@/lib/middleware/RequireRole";
 import { NextResponse } from "next/server";
 
-const DEPARTMENT_MANAGER_QUERY = `
-  query MyQuery($id: uuid!) {
-    departments(where: {head_user_id: {_eq: $id}}) {
+const GET_DEPARTMENT_BY_ID = `
+  query GetDepartmentById($id: uuid!) {
+    departments_by_pk(id: $id) {
+      id
       name
       description
-      interns {
+      head_user_id
+      created_at
+      user {
         id
-        college
-        user {
-          name
-          email
-          id
-        }
+        name
+        email
+        role
+      }
+      interns_aggregate {
+        aggregate { count }
       }
     }
   }
 `;
 
 export async function GET(request, context) {
-  const session = await requireAuth(request, ["admin", "manager", "mentor"])
+  const session = await requireAuth(request, ["admin", "hr", "manager", "mentor"])
   if (!session) {
     return NextResponse.json({ error: "Unauthorized", ok: false }, { status: 401 })
   }
@@ -30,14 +33,15 @@ export async function GET(request, context) {
   const id = params.id;
 
   try {
-    const data = await gqlFetch(DEPARTMENT_MANAGER_QUERY, { id });
+    const data = await gqlFetch(GET_DEPARTMENT_BY_ID, { id });
+    const department = data?.departments_by_pk ?? null;
+
+    if (!department) {
+      return NextResponse.json({ error: "Department not found", ok: false }, { status: 404 });
+    }
 
     return NextResponse.json(
-      {
-        success: true,
-        message: "Manager department details fetched successfully",
-        data: data
-      },
+      { ok: true, department },
       { status: 200 }
     );
   } catch (error) {

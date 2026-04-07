@@ -6,11 +6,9 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
-  CheckSquare,
   Calendar,
   Star,
   Building,
-  Megaphone,
   MessageSquare,
   BookOpen,
 } from "lucide-react";
@@ -80,23 +78,7 @@ export default function Sidebar() {
           </Link>
         )}
 
-        <Link
-          href="/tasks"
-          aria-current={isActive("/tasks") ? "page" : undefined}
-          className={`${linkBase} ${isActive("/tasks") ? activeClass : inactiveClass}`}
-        >
-          <CheckSquare className={iconClass} />
-          Tasks
-        </Link>
-
-        <Link
-          href="/attendance"
-          aria-current={isActive("/attendance") ? "page" : undefined}
-          className={`${linkBase} ${isActive("/attendance") ? activeClass : inactiveClass}`}
-        >
-          <Calendar className={iconClass} />
-          Attendance
-        </Link>
+        
 
         <Link
           href="/evaluations"
@@ -126,15 +108,6 @@ export default function Sidebar() {
             Departments
           </Link>
         )}
-
-        <Link
-          href="/announcements"
-          aria-current={isActive("/announcements") ? "page" : undefined}
-          className={`${linkBase} ${isActive("/announcements") ? activeClass : inactiveClass}`}
-        >
-          <Megaphone className={iconClass} />
-          Announcements
-        </Link>
 
         {canManage && (
           <Link
