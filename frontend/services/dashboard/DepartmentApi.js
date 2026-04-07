@@ -11,9 +11,10 @@ export async function getAllDepartments() {
         return { error: error.message, ok: false }
     }
 }
-export const getManagerDepartment = async (id) => {
+export const getManagerDepartment = async (userId) => {
     try {
-        const res = await fetch(`/api/departments/${id}`);
+        // Query by head_user_id (the mentor/manager's user ID), not by department UUID
+        const res = await fetch(`/api/departments/by-mentor?userId=${userId}`);
         const data = await res.json();
         return data;
     } catch (error) {
