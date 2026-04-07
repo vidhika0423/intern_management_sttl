@@ -12,6 +12,7 @@ import {
   Building,
   Megaphone,
   MessageSquare,
+  BookOpen,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -106,6 +107,15 @@ export default function Sidebar() {
           Evaluations
         </Link>
 
+        <Link
+          href="/tests"
+          aria-current={isActive("/tests") ? "page" : undefined}
+          className={`${linkBase} ${isActive("/tests") ? activeClass : inactiveClass}`}
+        >
+          <BookOpen className={iconClass} />
+          AI Tests
+        </Link>
+
         {canManage && (
           <Link
             href="/departments"
@@ -137,7 +147,7 @@ export default function Sidebar() {
           </Link>
         )}
 
-        {(canManage && session?.user?.role !== "mentor")  && (
+        {canManage && (
           <Link
             href="/users"
             aria-current={isActive("/users") ? "page" : undefined}
