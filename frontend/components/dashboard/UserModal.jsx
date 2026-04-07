@@ -180,12 +180,6 @@ export default function UserModal({ mode, initialData, onClose, onSuccess }) {
             )}
           </div>
 
-          {serverError && (
-            <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.22)", borderRadius: "10px", padding: "10px 14px", color: "#f87171", fontSize: "13px" }}>
-              {serverError}
-            </div>
-          )}
-
           <div style={{ paddingTop: "10px", display: "flex", gap: "10px", justifyContent: "flex-end" }}>
             <button type="button" onClick={onClose} className="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
               Cancel

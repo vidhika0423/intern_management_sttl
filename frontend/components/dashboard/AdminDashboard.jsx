@@ -7,6 +7,7 @@ import { getAdminStats } from "@/services/dashboard/AdminStats";
 import { useSession } from "next-auth/react";
 import DepartmentList from "./DepartmentList";
 import UserModal from "./UserModal";
+import { sendMail } from "@/lib/mailService/SendMail";
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
@@ -55,6 +56,16 @@ export default function AdminDashboard() {
                   >
                     Add User
                   </div>
+                  <div 
+                    onClick={async () => { 
+                      const res = await sendMail({ sendTo: "jayodedra9919@gmail.com", subject: "Test", text: "this is the tes mail for testing purpose" }) 
+                      console.log(res);
+                    }}
+                    className="bg-[#1a3aff] text-white px-4 py-2 rounded-lg cursor-pointer hover:shadow-md hover:shadow-[#1a3aff]/50 hover:bg-[#1a3aff]/80 transition-all duration-200"
+                  >
+                    Send Mail
+                  </div>
+                  
                 </div>
             </div>
 
@@ -88,7 +99,7 @@ export default function AdminDashboard() {
         <StatCard label="Departments" value={depts} loading={loading} />
       </div>
 
-      <div className="grid grid-cols-1 gap-5">
+      <div className="grid grid-cols-2 gap-5">
         <div className="card p-6">
           <div className="flex justify-between items-center mb-5">
             <h2 className="font-display text-[15px] font-semibold">
@@ -141,6 +152,57 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        <div className="card p-6">
+          <div className="flex justify-between items-center mb-5">
+            <h2 className="font-display text-[15px] font-semibold">
+              Recent Tasks
+            </h2>
+            <Link
+              href="/tasks"
+              className="text-[12px] text-[var(--accent-light)] no-underline"
+            >
+              View all →
+            </Link>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            {loading ? (
+              [1, 2, 3].map((i) => (
+                <div key={i} className="skeleton h-[42px]" />
+              ))
+            ) : data?.recent_tasks?.length === 0 ? (
+              <p className="text-[13px] text-[var(--text-muted)]">
+                No tasks yet.
+              </p>
+            ) : (
+              data?.recent_tasks?.map((task) => (
+                <div key={task.id} className="flex items-center gap-[10px]">
+                  <span
+                    className={`w-[7px] h-[7px] rounded-full shrink-0 inline-block ${
+                      task.priority === "high"
+                        ? "bg-[#ef4444]"
+                        : task.priority === "medium"
+                          ? "bg-[#f59e0b]"
+                          : "bg-[#22c55e]"
+                    }`}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-medium text-[var(--text-primary)] whitespace-nowrap overflow-hidden text-ellipsis">
+                      {task.title}
+                    </p>
+                    <p className="text-[11px] text-[var(--text-muted)]">
+                      {task.intern?.userByUserId?.name ?? "—"}
+                    </p>
+                  </div>
+
+                  <span className={`badge badge-${task.status}`}>
+                    {task.status.replace("_", " ")}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
       {/* manage departments */}
       <DepartmentList />

@@ -1,5 +1,16 @@
 import toast from "react-hot-toast"
 
+export const getUsers = async (page = 1, limit = 10, search = "", role = "") => {
+    try {
+        const response = await fetch(`/api/users?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&role=${role}`)
+        const res = await response.json()
+        return res
+    } catch (error) {
+        console.error("Error fetching users:", error)
+        return { ok: false, message: "Failed to fetch users" }
+    }
+}
+
 export const createUser = async (name, email, password, role) => {
     const response = await fetch(`/api/users`, {
         method: "POST",
@@ -13,7 +24,7 @@ export const createUser = async (name, email, password, role) => {
         toast.success(res.message || "User created successfully")
     } else {
         toast.error(res.message || "Failed to create user")
-    }
+    } 
     return res
 }
 
