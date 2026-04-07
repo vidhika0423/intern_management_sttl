@@ -138,7 +138,7 @@ export default function ManagerDashboard() {
             ) : (
               internsList.slice(0, 5).map((intern, i) => (
                 <Link
-                  key={intern.user?.id || i}
+                  key={intern.id || intern.user?.id || i}
                   href={`/interns/${intern.user?.id || 'unknown'}`}
                   className="no-underline flex items-center gap-[14px] p-2.5 rounded-[12px] hover:bg-gray-50/80 transition-all group border border-transparent hover:border-gray-100"
                 >

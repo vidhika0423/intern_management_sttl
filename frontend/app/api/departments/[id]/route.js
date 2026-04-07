@@ -8,6 +8,7 @@ const DEPARTMENT_MANAGER_QUERY = `
       name
       description
       interns {
+        id
         college
         user {
           name
@@ -20,7 +21,6 @@ const DEPARTMENT_MANAGER_QUERY = `
 `;
 
 export async function GET(request, context) {
-
   const session = await requireAuth(request, ["admin", "manager", "mentor"])
   if (!session) {
     return NextResponse.json({ error: "Unauthorized", ok: false }, { status: 401 })
@@ -45,4 +45,3 @@ export async function GET(request, context) {
     return NextResponse.json({ error: error.message, ok: false }, { status: 500 });
   }
 }
-

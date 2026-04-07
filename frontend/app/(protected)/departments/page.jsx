@@ -228,6 +228,8 @@ export default function DepartmentsPage() {
       ])
       const dRes = dResult.status === 'fulfilled' ? dResult.value : {}
       const uRes = uResult.status === 'fulfilled' ? uResult.value : {}
+      console.log('[departments page] dRes:', JSON.stringify(dRes))
+      console.log('[departments page] uRes:', JSON.stringify(uRes))
       setDepts(dRes?.departments ?? [])
       setUsers(uRes?.data ?? [])
     } catch {
