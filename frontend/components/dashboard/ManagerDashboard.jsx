@@ -18,8 +18,8 @@ export default function ManagerDashboard() {
         .then((result) => {
           if (result.success && result.data?.departments?.length > 0) {
             setData(result.data.departments[0]);
-          } else if (result.success && result.data?.departments?.length === 0) {
-            setError("No department found linked to this manager profile. Please contact an Administrator.");
+          } else if (result.success && (!result.data?.departments || result.data.departments.length === 0)) {
+            setError("Department not found. You are not assigned as head of any department. Please contact an Administrator.");
           } else {
             setError(result.error || "Failed to fetch data");
           }

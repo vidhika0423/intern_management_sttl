@@ -173,7 +173,7 @@ export default function InternsPage() {
 
       setInterns(iRes?.interns ?? [])
       setAllUsers(uRes?.data ?? [])
-      setDepts(dRes?.data?.departments ?? [])
+      setDepts(dRes?.departments ?? [])
     } catch {
       showToast('Failed to load data', false)
     } finally {
